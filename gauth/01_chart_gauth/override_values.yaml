@@ -1,0 +1,271 @@
+# Docker image configuration
+image:
+  registry: $IMAGE_REGISTRY/auth
+  # Configure imagePullSecrets if docker registry requires authentication
+  # https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/#registry-secret-existing-credentials
+  imagePullSecrets:
+    - name: pullsecret
+  pullPolicy: IfNotPresent
+COLOR: blue
+postgres:
+  deploy: false
+  secret:
+    name_override:
+    create: true
+  configmap:
+    name_override:
+    create: true
+  image: postgres:11-alpine
+  # REQUIRED FIELDS:
+  username: gauth_pg_username
+  password: gauth_pg_password
+  db: gauth
+  host: POSTGRES_ADDR
+  port: 5432
+
+redis:
+  deploy: false
+  secret:
+    name_override: gauth-redis
+    create: true
+  configmap:
+    name_override:
+    create: true
+  image: redis:5-stretch
+  cluster_nodes: infra-redis-redis-cluster-headless.infra.svc.cluster.local:6379
+  use_tls: false
+  # REDIS AUTH
+  password_required: true
+  password: gauth_redis_password
+
+services:
+  secrets:
+    useSecretProviderClass: false
+    aadpodidbinding: gauth-identity
+    secretProviderClassNames:
+      jks_keyvault: keyvault-gauth-jks-keyvault
+      jks_credentials: keyvault-gauth-jks-credentials
+      admin_user: keyvault-gauth-admin-user
+      pg_user: keyvault-gauth-pg-user
+      redis_password: keyvault-gauth-redis-password
+      client_credentials: keyvault-gauth-client-credentials
+      consul_token: keyvault-consul-consul-gauth-token
+  # Number of pod replicas, recommended to be N+1
+  replicas: 2
+  location: /USW1
+  db:
+    init: true
+    poolSize: 3
+    poolCheckoutTimeout: 3000
+    ssl: disable
+  secret:
+    name_override:
+    create: true
+    # REQUIRED FIELDS:
+    admin_username: gauth_admin_username
+    admin_password: gauth_admin_password
+    client_id: gauth_gws_client_id
+    client_secret: gauth_gws_client_secret
+
+  auth_ui:
+    # Pod resources requests and limits
+    resources:
+      limits:
+        cpu: 100m
+        memory: 1Gi
+      requests:
+        cpu: 100m
+        memory: 512Mi
+
+  auth:
+    jks:
+      enabled: true
+      sso:
+        enabled: true
+      secret:
+        create: true
+
+      # Convert keystore.jks file content to base64 ( cat keystore.jks | base64 ) and put the output here
+      keyStore: jksStorage.jks
+
+      keyStoreFileData: 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
+      # Keystore password
+      keyStorePassword: gauth_jks_keyStorePassword
+      # SSL key alias
+      keyAlias: gws-auth-key
+      # SSL key password
+      keyPassword: gauth_jks_keyPassword
+    # Number of pod replicas, recommended to be N+1, defaults to services.replica if empty
+    replicas:
+    # Pod resources requests and limits
+    resources:
+      requests:
+        cpu: 200m
+        memory: 1Gi
+      limits:
+        cpu: 200m
+        memory: 2Gi
+    # readiness probe.
+    # To disable readinessProbe - set readinessProbe: {}
+    readinessProbe:
+      httpGet:
+        path: /health
+        port: management
+      initialDelaySeconds: 30
+      timeoutSeconds: 3
+      periodSeconds: 10
+    # liveness probe
+    # To disable livenessProbe - set livenessProbe: {}
+    livenessProbe:
+      httpGet:
+        path: /health
+        port: management
+      initialDelaySeconds: 120
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 3
+      failureThreshold: 3
+
+  environment:
+    # Number of pod replicas, recommended to be N+1, defaults to services.replica if empty
+    replicas:
+    force_writable: true
+    # Pod resources requests and limits
+    resources:
+      requests:
+        cpu: 200m
+        memory: 1Gi
+      limits:
+        cpu: 200m
+        memory: 1Gi
+    # readiness probe.
+    # To disable readinessProbe - set readinessProbe: {}
+    readinessProbe:
+      httpGet:
+        path: /health
+        port: management
+      initialDelaySeconds: 30
+      timeoutSeconds: 3
+      periodSeconds: 10
+    # liveness probe
+    # To disable livenessProbe - set livenessProbe: {}
+    livenessProbe:
+      httpGet:
+        path: /health
+        port: management
+      initialDelaySeconds: 120
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 3
+      failureThreshold: 3
+
+# Optional Deployment/ReplicaSet parameters
+optional:
+  # https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/#priorityclass
+  priorityClassName: ''
+  #  https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  securityContext: {}
+
+  #  https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  nodeSelector: {}
+  #  https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  tolerations: []
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - podAffinityTerm:
+            labelSelector:
+              matchLabels:
+                gauth: '{{ .gauth }}'
+                app.kubernetes.io/name: '{{ include "auth.name" . }}'
+                app.kubernetes.io/instance: '{{ .Release.Name }}'
+            topologyKey: failure-domain.beta.kubernetes.io/zone
+          weight: 100
+
+# https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 10
+      maxUnavailable: 0
+
+
+# Ingress config
+# tps://kubernetes.io/docs/concepts/services-networking/ingress/
+ingress:
+  enabled: true
+  # Host that will be used by ingress.
+  # Applies to all inbound traffic through the host specified
+  frontend: gauth.${DOMAIN}
+  annotations:
+    # Default annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  ingressClassName: nginx
+  tls_enabled: true
+  tls:
+    - hosts:
+        - gauth.${DOMAIN}
+      secretName: gauth-ingress-cert
+
+
+# Internal  config
+# tps://kubernetes.io/docs/concepts/services-networking/ingress/
+internal_ingress:
+  enabled: true
+  # Host that will be used by ingress.
+  # Applies to all inbound traffic through the host specified
+  frontend: gauth-int.${DOMAIN}
+  annotations:
+    # Default annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  #ingressClassName: nginx-internal
+  ingressClassName: nginx
+  # HTTPS configuration
+  tls_enabled: true
+  tls:
+    - hosts:
+        - gauth-int.${DOMAIN}
+      secretName: int-auth-ingress-cert
+
+monitoring:
+  # Deploy ServiceMonitor
+  enabled: true
+  # Metrics Scraping Interval
+  interval: 15s
+  # Create ConfigMap with Grafana Dashboards
+  dashboards: true
+  # Create PrometheusRule k8s object with alarm definitions
+  alarms: false
+  # Create rules with CRITICAL severity for Pager Duty integration.
+  # `false` will change severity to HIGH (email notifications)
+  pagerduty: true
+
+services:
+  auth:
+    replicas: 1
+  environment:
+    replicas: 1
+  auth_ui:
+    replicas: 1
+
+pod_autoscaler:
+  auth:
+    enabled: false
+    metrics:
+      - type: Resource
+        resource:
+          name: cpu
+          target:
+            type: Utilization
+            averageUtilization: 350
+  environment:
+    enabled: false
+    metrics:
+      - type: Resource
+        resource:
+          name: cpu
+          target:
+            type: Utilization
+            averageUtilization: 350

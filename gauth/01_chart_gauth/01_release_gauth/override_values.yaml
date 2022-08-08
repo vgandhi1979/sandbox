@@ -1,0 +1,47 @@
+gws-ui-auth:          100.0.007.1355
+gws-core-environment: 100.0.007.1927
+gws-core-auth:        100.0.007.3692
+
+postgres:
+  host:     POSTGRES_ADDR
+  db:       DB_NAME 
+
+###############################################################################
+# Values below recommended to save in secrets/deployment-secrets for privacy 
+# 
+# Don`t change values below if using secrets/deployment-secrets. 
+# It will be read and replaced by values from secrets/deployment-secrets
+###############################################################################
+  username: gauth_pg_username
+  password: gauth_pg_password
+
+
+redis:
+  password: gauth_redis_password
+
+services:
+  location: global_location
+  secret:
+    admin_username: gauth_admin_username
+    admin_password: gauth_admin_password
+    client_id:      gauth_gws_client_id
+    client_secret:  gauth_gws_client_secret
+
+  auth:
+    jks:
+      enabled: true
+      sso:
+        enabled: true
+      secret:
+        create: true
+
+      # Convert keystore.jks file content to base64 ( cat keystore.jks | base64 ) and put the output here
+      keyStore: jksStorage.jks
+
+      keyStoreFileData: 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
+      # Keystore password
+      keyStorePassword: gauth_jks_keyStorePassword
+      # SSL key alias
+      keyAlias: gws-auth-key
+      # SSL key password
+      keyPassword: gauth_jks_keyPassword
