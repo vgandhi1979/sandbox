@@ -83,7 +83,7 @@ on:
 
       namespace:
         # by default will use namespace equal to service name
-        description: namespace
+        description: namespace of pods
         required: false
       helmrepo:
         description: helm repo name in HELM_REGISTRY
