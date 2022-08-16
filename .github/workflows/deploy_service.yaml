@@ -76,10 +76,9 @@ on:
         type: choice
         description: gcloud cluster
         required: true
-        default: sandbox121
+        default: sandbox
         options:
-        - sandbox121
-        - sandbox121-new
+        - sandbox
 
       namespace:
         # by default will use namespace equal to service name
@@ -109,23 +108,14 @@ jobs:
       run: |
         case ${{ github.event.inputs.cluster }} in
 
-          sandbox121)
+          sandbox)
               echo "GKE_SA_KEY_NAME=GKE_SA_KEY"                     >> $GITHUB_ENV
               echo "GKE_PROJECT_NAME=GKE_PROJECT"                   >> $GITHUB_ENV
               echo "GKE_CLUSTER=sandbox121"                         >> $GITHUB_ENV
               echo "GKE_ZONE=us-west2"                              >> $GITHUB_ENV
-              echo "DOMAIN=sandbox121.genesyscloud.xyz"             >> $GITHUB_ENV
+              echo "DOMAIN=sandbox.genesyscloud.xyz"             >> $GITHUB_ENV
             ;;
 
-
-          sandbox121-new)
-              echo "GKE_SA_KEY_NAME=GKE_SA_KEY"                     >> $GITHUB_ENV
-              echo "GKE_PROJECT_NAME=GKE_PROJECT"                   >> $GITHUB_ENV
-              echo "GKE_CLUSTER=sandbox121-new"                     >> $GITHUB_ENV
-              echo "GKE_ZONE=us-west2"                              >> $GITHUB_ENV
-              echo "DOMAIN=sandbox121new.genesyscloud.xyz"          >> $GITHUB_ENV
-            ;;
-        
         esac
 
 
@@ -313,7 +303,7 @@ jobs:
                 envsubst < $DIR_RL/override_values.yaml > overrides.yaml
 
 
-                echo "helm $CMD $RELEASE $FLAGS --wait --timeout 600s"
+                echo "helm $CMD $RELEASE $FLAGS --wait --timeout 1200s"
                 [[ "$CMD" ]] && [[ "$CHART" ]] && [[ "$RELEASE" ]] && \
                             helm $CMD $RELEASE $FLAGS
 
