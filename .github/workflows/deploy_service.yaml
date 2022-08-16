@@ -111,9 +111,9 @@ jobs:
           sandbox)
               echo "GKE_SA_KEY_NAME=GKE_SA_KEY"                     >> $GITHUB_ENV
               echo "GKE_PROJECT_NAME=GKE_PROJECT"                   >> $GITHUB_ENV
-              echo "GKE_CLUSTER=sandbox121"                         >> $GITHUB_ENV
+              echo "GKE_CLUSTER=sandbox"                            >> $GITHUB_ENV
               echo "GKE_ZONE=us-west2"                              >> $GITHUB_ENV
-              echo "DOMAIN=sandbox.genesyscloud.xyz"             >> $GITHUB_ENV
+              echo "DOMAIN=sandbox.genesyscloud.xyz"                >> $GITHUB_ENV
             ;;
 
         esac
