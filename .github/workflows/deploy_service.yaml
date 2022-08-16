@@ -44,11 +44,8 @@ on:
         type: choice
         description: service(s) for deployment
         required: true
-        default: infra
+        default: gauth
         options:
-        - infra
-        - logging
-        - monitoring
         - gauth
         - voice
         - tenant
