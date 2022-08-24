@@ -68,6 +68,7 @@ stringData:
   tenant_t100_pg_db_name:  t100
   tenant_t100_pg_db_password:  t100
   tenant_t100_pg_db_user:  t100
+  LOCATION: USW1
 ```
 
 ## Additional Information
