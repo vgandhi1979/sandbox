@@ -67,7 +67,7 @@ stringData:
   gauth_gws_client_secret: base64 encoded gauth_secret
   gauth_jks_keyPassword: keyPass 
   gauth_jks_keyStorePassword: keyStorePass
-  LOCATION: USW1
+  LOCATION: /USW1
 ```
 ## Additional Information
 
