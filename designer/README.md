@@ -28,7 +28,7 @@ Create the following secrets to store confidential information you may not want 
 |Key|Sample Value|
 |-|-|
 designer_gws_client_id| designer_client
-designer_gws_client_secret| secret
+designer_gws_client_secret| cleartext secret
 
 An example `.yaml`
 ```
