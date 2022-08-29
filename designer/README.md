@@ -39,8 +39,8 @@ metadata:
   name: deployment-secrets
   namespace: designer
 stringData:
-  designer_gws_client_id: designer_client
-  designer_gws_client_secret: secret
+  designer_gws_client_id: designer_client (please use gauth api client name）
+  designer_gws_client_secret: secret (please use cleartext password)
 ```
 
 ## Upgrade
