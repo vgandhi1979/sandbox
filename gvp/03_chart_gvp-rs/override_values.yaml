@@ -1,6 +1,7 @@
 ## Global Parameters
 ## Add labels to all the deployed resources
 ##
+##
 labels:
   enabled: true
   serviceGroup: "gvp"
