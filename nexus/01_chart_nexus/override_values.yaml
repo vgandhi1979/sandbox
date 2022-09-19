@@ -7,7 +7,7 @@ replicaCount: 1
 
 image:
   registry: $IMAGE_REGISTRY
-  repository: nexus/nexus
+  # repository: nexus/nexus
   pullPolicy: IfNotPresent
 
 imagePullSecrets:
